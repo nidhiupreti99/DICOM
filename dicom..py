@@ -4,22 +4,27 @@ Created on Sat Jan 12 22:00:52 2019
 
 @author: Nidhi
 """
-
+import csv
 import pydicom as dicom
 file1=dicom.read_file("bmode.dcm")
 file2=dicom.read_file("ttfm.dcm")
-ttfm_tags=[]
-bmode_tags=[]
-
+ttfm_tags={}
+bmode_tags={}
 for line in file1:
-    bmode_tags.append(line.tag)
-    
+    ttfm_tags[(line.tag,line.name)]=line.value
+
 for line in file2:
-    ttfm_tags.append(line.tag)
+    bmode_tags[(line.tag, line.name)]=line.value
+    
+
 
 with open('output.txt', 'w') as f:
-    for item in bmode_tags:
-        f.write("%s\n" % item)
-with open('output.txt', 'w') as f:
-    for item in ttfm_tags:
-        f.write("%s\n" % item)
+
+    for key, value in ttfm_tags.items():
+        f.write('%s:%s\n' % (key, value))
+        
+with open('output.txt', 'a') as f:
+    f.write("bmode tags")
+    for keys, value in bmode_tags.items():
+         f.write('%s:%s\n' % (key, value))
+     
